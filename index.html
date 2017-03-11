@@ -44,13 +44,13 @@
         }
 
         .led-mode {
-            color: #6b6bff;
+            color: #6ba1ff;
             text-shadow: 0 0 2vw #a49cff;
             margin-right: 30px;
         }
 
         .led-time {
-            color: red;
+            color: #ef2713;
             text-shadow: 0 0 2vw #ff887e;
         }
 
@@ -64,6 +64,7 @@
 
         .controls {
             position: absolute;
+            left: 0;
             width: 100%;
             bottom: 0;
             text-align: center;
@@ -122,7 +123,7 @@
     <button onclick="stopTimer(true)" id="stopButton">STOP</button>
     <button onclick="startTimerWithCountdown()" id="startTimerButton">DOWN</button>
     <button onclick="startWithCountdown()" id="startButton">UP</button>
-    <button onclick="setEnterMode()" id="enterModeButton">SET</button>
+    <button onclick="setEnterMode(true)" id="enterModeButton">SET</button>
 </div>
 
 <script>
@@ -145,7 +146,7 @@
                 oscillator.connect(node);
                 node.connect(synth.destination);
 
-                oscillator.type = 'sine';
+                oscillator.type = 'square';
                 oscillator.frequency.value = freqency;
 
                 node.gain.value = volume / 20;
@@ -177,6 +178,7 @@
 
     function runWithCountdown(func) {
         countdownRunning = true;
+        displayCurrentTime();
         countdownInterval = window.setInterval(function () {
             countdown = countdown - 1;
             if (countdownRunning) {
@@ -196,6 +198,8 @@
 
     function startWithCountdown() {
         reset();
+        clockRunningUp = true;
+        clockRunningDown = false;
 
         buttonBeep();
         buttonEnabled("startButton", false);
@@ -203,13 +207,13 @@
         buttonEnabled("stopButton", true);
         buttonEnabled("enterModeButton", false);
 
-        runWithCountdown(function () {
-            startTimer(true)
-        });
+        runWithCountdown(startTimer);
     }
 
     function startTimerWithCountdown() {
         reset();
+        clockRunningUp = false;
+        clockRunningDown = true;
 
         buttonBeep();
         buttonEnabled("startButton", false);
@@ -217,9 +221,7 @@
         buttonEnabled("stopButton", true);
         buttonEnabled("enterModeButton", false);
 
-        runWithCountdown(function () {
-            startTimer(false)
-        });
+        runWithCountdown(startTimer);
     }
 
     var timerInterval;
@@ -237,7 +239,7 @@
     function displayFinish(finishTime) {
         stopTimer();
         beep(1200, 660, 0.8);
-        if(finishTime) {
+        if (finishTime) {
             setMode(finishTime.format("mm"));
             setTimer(finishTime.format("ss:SS"));
         } else {
@@ -248,38 +250,42 @@
 
     function displayCurrentTime() {
         var diff, res;
-        if (clockRunningUp) {
-            diff = moment.duration(moment().diff(start));
-            res = moment.utc(diff.asMilliseconds());
-            if (res.valueOf() >= (targetTimestamp.valueOf() - start.valueOf())) {
-                var finishTime = moment.utc(targetTimestamp.valueOf() - start.valueOf());
-                displayFinish(finishTime);
-            } else {
-                setMode(res.format("mm"));
-                setTimer(res.format("ss:SS"));
-            }
-        }
-        if (clockRunningDown) {
-            diff = moment.duration(moment().diff(start));
-            res = moment.utc(targetTimestamp.valueOf() - diff.asMilliseconds() - start.valueOf());
-            if (res.valueOf() <= 0) {
-                displayFinish();
-            } else {
-                setMode(res.format("mm"));
-                setTimer(res.format("ss:SS"));
-            }
-        }
+
         if (countdownRunning) {
-            setMode("0" + countdown);
-            setTimer("00:00");
+            setMode(leftPad2(countdown));
+            var startWith = "00:00";
+            if(clockRunningDown) {
+                startWith = moment.utc(timerDownDuration.valueOf()).format("ss:SS");
+            }
+            setTimer(startWith);
+        } else {
+            if (clockRunningUp) {
+                diff = moment.duration(moment().diff(start));
+                res = moment.utc(diff.asMilliseconds());
+                if (res.valueOf() >= (targetTimestamp.valueOf() - start.valueOf())) {
+                    var finishTime = moment.utc(targetTimestamp.valueOf() - start.valueOf());
+                    displayFinish(finishTime);
+                } else {
+                    setMode(res.format("mm"));
+                    setTimer(res.format("ss:SS"));
+                }
+            }
+            if (clockRunningDown) {
+                diff = moment.duration(moment().diff(start));
+                res = moment.utc(targetTimestamp.valueOf() - diff.asMilliseconds() - start.valueOf());
+                if (res.valueOf() <= 0) {
+                    displayFinish();
+                } else {
+                    setMode(res.format("mm"));
+                    setTimer(res.format("ss:SS"));
+                }
+            }
         }
     }
 
     var timerDownDuration = 10;
-    function startTimer(up) {
+    function startTimer() {
         start = moment();
-        clockRunningUp = up;
-        clockRunningDown = !up;
         targetTimestamp = moment().add(timerDownDuration, "milliseconds");
         timerInterval = window.setInterval(function () {
             if (clockRunningUp || clockRunningDown) {
@@ -303,8 +309,10 @@
     }
 
     var enterMode = {enabled: false};
-    function reset() {
-        buttonBeep();
+    function reset(beep) {
+        if (beep) {
+            buttonBeep();
+        }
         stopTimer();
         countdown = countdownLength;
         enterMode.enabled = false;
@@ -314,18 +322,31 @@
     }
 
     var enteredNumber = '0010';
-    function setEnterMode() {
-        reset();
+    function setEnterMode(beep) {
         enteredNumber = '';
-        buttonEnabled("startButton", false);
-        buttonEnabled("startTimerButton", false);
-        buttonEnabled("stopButton", false);
 
-        enterMode.enabled = true;
-        enteredNumber = '';
-        setMode('--');
-        setTimer('--:--');
-        document.getElementById("focusable").focus();
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            var enteredTime = prompt("Please enter time (mm:ss)", "00:10");
+            if (enteredTime != null) {
+                reset();
+                buttonBeep();
+                buttonEnabled("startButton", true);
+                buttonEnabled("startTimerButton", true);
+                buttonEnabled("enterModeButton", true);
+                timerDownDuration = moment.duration(moment("2000-01-01T00:" + enteredTime).diff(moment("2000-01-01T00:00:00")));
+            }
+        } else {
+            reset(beep);
+            buttonEnabled("startButton", false);
+            buttonEnabled("startTimerButton", false);
+            buttonEnabled("stopButton", false);
+
+            enterMode.enabled = true;
+            enteredNumber = '';
+            setMode('--');
+            setTimer('--:--');
+            document.getElementById("focusable").focus();
+        }
     }
 
     function parseEnteredValue() {
@@ -341,7 +362,7 @@
             }
             else if (event.keyCode == 13) {
                 timerDownDuration = moment.duration(moment("2000-01-01T00:" + parseEnteredValue()).diff(moment("2000-01-01T00:00:00")));
-
+                buttonBeep();
                 buttonEnabled("startButton", true);
                 buttonEnabled("startTimerButton", true);
                 buttonEnabled("enterModeButton", true);
@@ -353,6 +374,12 @@
     function leftPad(string) {
         var str = "" + string;
         var pad = "0000";
+        return pad.substring(0, pad.length - str.length) + str;
+    }
+
+    function leftPad2(string) {
+        var str = "" + string;
+        var pad = "00";
         return pad.substring(0, pad.length - str.length) + str;
     }
 
