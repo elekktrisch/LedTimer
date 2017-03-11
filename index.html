@@ -155,16 +155,16 @@
     }
 
     var synth = new (window.AudioContext || window.webkitAudioContext)();
+    var oscillator = synth.createOscillator();
+    var node = synth.createGain();
+    oscillator.connect(node);
+    node.connect(synth.destination);
+    oscillator.type = 'square';
+
     function beep(duration, freqency, volume) {
         var _beep = (function () {
             return function (duration, freqency) {
-                var oscillator = synth.createOscillator();
-                var node = synth.createGain();
-                oscillator.connect(node);
-                node.connect(synth.destination);
-
-                oscillator.type = 'square';
-                oscillator.frequency.value = freqency;
+             oscillator.frequency.value = freqency;
 
                 node.gain.value = volume / 20;
                 oscillator.start();
