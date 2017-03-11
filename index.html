@@ -1,0 +1,246 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <style>
+        @font-face {
+            font-family: "7segment";
+            src: url("./DSEG7Classic-Italic.ttf");
+        }
+
+        body {
+            background-color: #121212;
+            display: flex;
+            color: white;
+            margin: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .flex-container,
+        .flex-container-off {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-container-off {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .clock {
+        }
+
+        .led {
+            display: inline-flex;
+            font-size: 18vw;
+            font-family: '7segment', monospace;
+        }
+
+        .led-mode {
+            color: #6b6bff;
+            text-shadow: 0 0 2vw #a49cff;
+            margin-right: 30px;
+        }
+
+        .led-time {
+            color: red;
+            text-shadow: 0 0 2vw #ff887e;
+        }
+
+        .clock-off {
+        }
+
+        .led-off {
+            color: #2c2c2c;
+            text-shadow: -1px -1px 0.2vw #474747;
+        }
+
+        .controls {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            text-align: center;
+            align-items: center;
+        }
+
+        .controls button {
+            float: right;
+            background-color: rgba(0, 0, 0, 0);
+            border: 1px solid #505050;
+            border-radius: 0.5vw;
+            font-size: 3vw;
+            color: #505050;
+            padding: 1vw 3vw;
+            margin-right: 0.7vw;
+        }
+
+        .controls button:hover {
+            color: #d7d8e4;
+            border-color: white;
+            cursor: pointer;
+            background-image: linear-gradient(to top, #201e21 40%, #383838 100%)
+        }
+
+        .controls button:disabled {
+            color: #101010;
+            border-color: #1d1d1d;
+            cursor: inherit;
+            background: #232323 none;
+        }
+
+        .controls button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="flex-container-off">
+    <div class="clock-off">
+        <div class="led led-mode led-off">88</div>
+        <div class="led led-time led-off">88:88</div>
+    </div>
+</div>
+<div class="flex-container">
+    <div class="clock">
+        <div class="led led-mode" id="mode">10</div>
+        <div class="led led-time" id="timer">00:00</div>
+    </div>
+</div>
+
+<div class="controls">
+    <button onclick="reset()" id="resetButton">RESET</button>
+    <button onclick="stopTimer()" id="stopButton">STOP</button>
+    <button onclick="startWithCountdown()" id="startButton">START</button>
+</div>
+
+<script>
+    var introBeepDuration = 300;
+    var introBeepFrequency = 440;
+    var markBeepDuration = 600;
+    var markBeepFrequency = 880;
+    var countdownLength = 10;
+
+    function buttonBeep() {
+        beep(80, 1800, 0.2);
+    }
+
+    var synth = new (window.AudioContext || window.webkitAudioContext)();
+    function beep(duration, freqency, volume) {
+        var _beep = (function () {
+            return function (duration, freqency) {
+                var oscillator = synth.createOscillator();
+                var node = synth.createGain();
+                oscillator.connect(node);
+                node.connect(synth.destination);
+
+                oscillator.type = 'sine';
+                oscillator.frequency.value = freqency;
+
+                node.gain.value = volume / 20;
+                oscillator.start();
+
+                setTimeout(function () {
+                    oscillator.stop();
+                }, duration);
+
+            };
+        })();
+        _beep(duration, freqency, volume);
+        _beep(duration, freqency * 2, volume);
+        _beep(duration, freqency * 3, volume);
+        _beep(duration, freqency * 4, volume);
+    }
+
+    var countdownRunning = false;
+    var clockRunning = false;
+    var countdownInterval;
+
+    function buttonEnabled(id, enabled) {
+        document.getElementById(id).disabled = !enabled;
+    }
+    buttonEnabled("startButton", true);
+    buttonEnabled("stopButton", false);
+
+    function startWithCountdown() {
+        reset();
+
+        buttonBeep();
+        buttonEnabled("startButton", false);
+        buttonEnabled("stopButton", true);
+        countdownRunning = true;
+        countdownInterval = window.setInterval(function () {
+            countdown = countdown - 1;
+            if (countdownRunning) {
+                displayCurrentTime();
+                if (countdown < 4 && countdown > 0) {
+                    beep(introBeepDuration, introBeepFrequency, 0.8);
+                }
+                if (countdown === 0) {
+                    beep(markBeepDuration, markBeepFrequency, 0.8);
+                    clearInterval(countdownInterval);
+                    startTimer();
+                    countdownRunning = false;
+                }
+            }
+        }, 1000);
+    }
+
+    var timerInterval;
+    var start;
+    var countdown;
+
+    function displayCurrentTime() {
+        if (clockRunning) {
+            var diff = moment.duration(moment().diff(start));
+            var res = moment.utc(diff.asMilliseconds());
+            document.getElementById("mode").innerHTML = res.format("mm");
+            document.getElementById("timer").innerHTML = res.format("ss:SS");
+        }
+        if (countdownRunning) {
+            document.getElementById("mode").innerHTML = "0" + countdown;
+            document.getElementById("timer").innerHTML = "00:00";
+        }
+    }
+
+    function startTimer() {
+        start = moment();
+        clockRunning = true;
+        timerInterval = window.setInterval(function () {
+            if (clockRunning) {
+                displayCurrentTime();
+            }
+        }, 53);
+    }
+
+    function stopTimer() {
+        buttonBeep();
+        buttonEnabled("stopButton", false);
+        clockRunning = false;
+        countdownRunning = false;
+        if (countdownInterval) clearInterval(countdownInterval);
+        if (timerInterval) clearInterval(timerInterval);
+        displayCurrentTime();
+    }
+
+    function reset() {
+        buttonBeep();
+        buttonEnabled("startButton", true);
+        buttonEnabled("stopButton", false);
+        stopTimer();
+        countdown = countdownLength;
+
+        document.getElementById("mode").innerHTML = '' + countdownLength;
+        document.getElementById("timer").innerHTML = '00:00';
+    }
+
+</script>
+</body>
+</html>
