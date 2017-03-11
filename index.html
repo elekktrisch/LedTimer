@@ -102,6 +102,9 @@
 </head>
 <body>
 
+<button id="focusable"
+        style="width:0;height:0;position:absolute;z-index:-2;background-color: rgba(0,0,0,0);border: 0;"></button>
+
 <div class="flex-container-off">
     <div class="clock-off">
         <div class="led led-mode led-off">88</div>
@@ -117,8 +120,10 @@
 
 <div class="controls">
     <button onclick="reset()" id="resetButton">RESET</button>
-    <button onclick="stopTimer()" id="stopButton">STOP</button>
-    <button onclick="startWithCountdown()" id="startButton">START</button>
+    <button onclick="stopTimer(true)" id="stopButton">STOP</button>
+    <button onclick="startTimerWithCountdown()" id="startTimerButton">DOWN</button>
+    <button onclick="startWithCountdown()" id="startButton">UP</button>
+    <button onclick="setEnterMode()" id="enterModeButton">ENTER</button>
 </div>
 
 <script>
@@ -160,7 +165,8 @@
     }
 
     var countdownRunning = false;
-    var clockRunning = false;
+    var clockRunningUp = false;
+    var clockRunningDown = false;
     var countdownInterval;
 
     function buttonEnabled(id, enabled) {
@@ -169,12 +175,7 @@
     buttonEnabled("startButton", true);
     buttonEnabled("stopButton", false);
 
-    function startWithCountdown() {
-        reset();
-
-        buttonBeep();
-        buttonEnabled("startButton", false);
-        buttonEnabled("stopButton", true);
+    function runWithCountdown(func) {
         countdownRunning = true;
         countdownInterval = window.setInterval(function () {
             countdown = countdown - 1;
@@ -186,59 +187,173 @@
                 if (countdown === 0) {
                     beep(markBeepDuration, markBeepFrequency, 0.8);
                     clearInterval(countdownInterval);
-                    startTimer();
+                    func();
                     countdownRunning = false;
                 }
             }
         }, 1000);
     }
 
+    function startWithCountdown() {
+        reset();
+
+        buttonBeep();
+        buttonEnabled("startButton", false);
+        buttonEnabled("startTimerButton", false);
+        buttonEnabled("stopButton", true);
+        buttonEnabled("enterModeButton", false);
+
+        runWithCountdown(function () {
+            startTimer(true)
+        });
+    }
+
+    function startTimerWithCountdown() {
+        reset();
+
+        buttonBeep();
+        buttonEnabled("startButton", false);
+        buttonEnabled("startTimerButton", false);
+        buttonEnabled("stopButton", true);
+        buttonEnabled("enterModeButton", false);
+
+        runWithCountdown(function () {
+            startTimer(false)
+        });
+    }
+
     var timerInterval;
     var start;
+    var targetTimestamp;
     var countdown;
 
-    function displayCurrentTime() {
-        if (clockRunning) {
-            var diff = moment.duration(moment().diff(start));
-            var res = moment.utc(diff.asMilliseconds());
-            document.getElementById("mode").innerHTML = res.format("mm");
-            document.getElementById("timer").innerHTML = res.format("ss:SS");
-        }
-        if (countdownRunning) {
-            document.getElementById("mode").innerHTML = "0" + countdown;
-            document.getElementById("timer").innerHTML = "00:00";
+    function setMode(value) {
+        document.getElementById("mode").innerHTML = value;
+    }
+    function setTimer(value) {
+        document.getElementById("timer").innerHTML = value;
+    }
+
+    function displayFinish(finishTime) {
+        stopTimer();
+        beep(1200, 660, 0.8);
+        if(finishTime) {
+            setMode(finishTime.format("mm"));
+            setTimer(finishTime.format("ss:SS"));
+        } else {
+            setMode("00");
+            setTimer("00:00");
         }
     }
 
-    function startTimer() {
+    function displayCurrentTime() {
+        var diff, res;
+        if (clockRunningUp) {
+            diff = moment.duration(moment().diff(start));
+            res = moment.utc(diff.asMilliseconds());
+            if (res.valueOf() >= (targetTimestamp.valueOf() - start.valueOf())) {
+                var finishTime = moment.utc(targetTimestamp.valueOf() - start.valueOf());
+                displayFinish(finishTime);
+            } else {
+                setMode(res.format("mm"));
+                setTimer(res.format("ss:SS"));
+            }
+        }
+        if (clockRunningDown) {
+            diff = moment.duration(moment().diff(start));
+            res = moment.utc(targetTimestamp.valueOf() - diff.asMilliseconds() - start.valueOf());
+            if (res.valueOf() <= 0) {
+                displayFinish();
+            } else {
+                setMode(res.format("mm"));
+                setTimer(res.format("ss:SS"));
+            }
+        }
+        if (countdownRunning) {
+            setMode("0" + countdown);
+            setTimer("00:00");
+        }
+    }
+
+    var timerDownDuration = 10;
+    function startTimer(up) {
         start = moment();
-        clockRunning = true;
+        clockRunningUp = up;
+        clockRunningDown = !up;
+        targetTimestamp = moment().add(timerDownDuration, "milliseconds");
         timerInterval = window.setInterval(function () {
-            if (clockRunning) {
+            if (clockRunningUp || clockRunningDown) {
                 displayCurrentTime();
             }
         }, 53);
     }
 
-    function stopTimer() {
-        buttonBeep();
+    function stopTimer(beep) {
+        if (beep) {
+            buttonBeep();
+        }
         buttonEnabled("stopButton", false);
-        clockRunning = false;
+        clockRunningUp = false;
+        clockRunningDown = false;
         countdownRunning = false;
         if (countdownInterval) clearInterval(countdownInterval);
         if (timerInterval) clearInterval(timerInterval);
         displayCurrentTime();
     }
 
+    var enterMode = {enabled: false};
     function reset() {
         buttonBeep();
         buttonEnabled("startButton", true);
+        buttonEnabled("startTimerButton", true);
         buttonEnabled("stopButton", false);
+        buttonEnabled("resetButton", true);
+        buttonEnabled("enterModeButton", true);
         stopTimer();
         countdown = countdownLength;
+        enterMode.enabled = false;
 
-        document.getElementById("mode").innerHTML = '' + countdownLength;
-        document.getElementById("timer").innerHTML = '00:00';
+        setMode('' + countdownLength);
+        setTimer('00:00');
+    }
+
+    var enteredNumber = '0010';
+    function setEnterMode() {
+        buttonBeep();
+        enteredNumber = '';
+        buttonEnabled("startButton", false);
+        buttonEnabled("stopButton", false);
+        buttonEnabled("resetButton", false);
+
+        enterMode.enabled = true;
+        enteredNumber = '';
+        setMode('--');
+        setTimer('--:--');
+        document.getElementById("focusable").focus();
+    }
+
+    function parseEnteredValue() {
+        var res = leftPad(enteredNumber.substring(enteredNumber.length - 4));
+        return res.substring(0, 2) + ":" + res.substring(2, 4);
+    }
+    document.addEventListener('keydown', function (event) {
+        if (enterMode.enabled) {
+            if (event.keyCode >= 48 && event.keyCode <= 57) {
+                buttonBeep();
+                enteredNumber = enteredNumber + '' + (event.keyCode - 48);
+                setTimer(parseEnteredValue());
+            }
+            else if (event.keyCode == 13) {
+                timerDownDuration = moment.duration(moment("2000-01-01T00:" + parseEnteredValue()).diff(moment("2000-01-01T00:00:00")));
+                reset();
+            }
+        }
+    });
+
+    function leftPad(string) {
+        var str = "" + string;
+        var pad = "0000";
+        return pad.substring(0, pad.length - str.length) + str;
     }
 
 </script>
