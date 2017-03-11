@@ -119,11 +119,10 @@
 </div>
 
 <div class="controls">
-    <button onclick="reset()" id="resetButton">RESET</button>
     <button onclick="stopTimer(true)" id="stopButton">STOP</button>
     <button onclick="startTimerWithCountdown()" id="startTimerButton">DOWN</button>
     <button onclick="startWithCountdown()" id="startButton">UP</button>
-    <button onclick="setEnterMode()" id="enterModeButton">ENTER</button>
+    <button onclick="setEnterMode()" id="enterModeButton">SET</button>
 </div>
 
 <script>
@@ -172,8 +171,9 @@
     function buttonEnabled(id, enabled) {
         document.getElementById(id).disabled = !enabled;
     }
-    buttonEnabled("startButton", true);
+    buttonEnabled("startButton", false);
     buttonEnabled("stopButton", false);
+    buttonEnabled("startTimerButton", false);
 
     function runWithCountdown(func) {
         countdownRunning = true;
@@ -293,6 +293,7 @@
             buttonBeep();
         }
         buttonEnabled("stopButton", false);
+        buttonEnabled("enterModeButton", true);
         clockRunningUp = false;
         clockRunningDown = false;
         countdownRunning = false;
@@ -304,11 +305,6 @@
     var enterMode = {enabled: false};
     function reset() {
         buttonBeep();
-        buttonEnabled("startButton", true);
-        buttonEnabled("startTimerButton", true);
-        buttonEnabled("stopButton", false);
-        buttonEnabled("resetButton", true);
-        buttonEnabled("enterModeButton", true);
         stopTimer();
         countdown = countdownLength;
         enterMode.enabled = false;
@@ -319,11 +315,11 @@
 
     var enteredNumber = '0010';
     function setEnterMode() {
-        buttonBeep();
+        reset();
         enteredNumber = '';
         buttonEnabled("startButton", false);
+        buttonEnabled("startTimerButton", false);
         buttonEnabled("stopButton", false);
-        buttonEnabled("resetButton", false);
 
         enterMode.enabled = true;
         enteredNumber = '';
@@ -345,6 +341,10 @@
             }
             else if (event.keyCode == 13) {
                 timerDownDuration = moment.duration(moment("2000-01-01T00:" + parseEnteredValue()).diff(moment("2000-01-01T00:00:00")));
+
+                buttonEnabled("startButton", true);
+                buttonEnabled("startTimerButton", true);
+                buttonEnabled("enterModeButton", true);
                 reset();
             }
         }
