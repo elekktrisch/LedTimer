@@ -1,5 +1,6 @@
 <html>
 <head>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
     <style>
         @font-face {
@@ -8,9 +9,6 @@
         }
 
         body {
-            background-color: #121212;
-            display: flex;
-            color: white;
             margin: 0;
         }
 
@@ -31,7 +29,12 @@
 
         .flex-container-off {
             position: absolute;
-            z-index: -1;
+        }
+
+        .flex-container {
+            position: absolute;
+            z-index: 1;
+            left: 0;
         }
 
         .clock {
@@ -64,6 +67,7 @@
 
         .controls {
             position: absolute;
+            z-index: 2;
             left: 0;
             width: 100%;
             bottom: 0;
@@ -99,6 +103,14 @@
         .controls button:focus {
             outline: none;
         }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            background-color: #121212;
+            display: flex;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -106,24 +118,28 @@
 <button id="focusable"
         style="width:0;height:0;position:absolute;z-index:-2;background-color: rgba(0,0,0,0);border: 0;"></button>
 
-<div class="flex-container-off">
-    <div class="clock-off">
-        <div class="led led-mode led-off">88</div>
-        <div class="led led-time led-off">88:88</div>
+<div id="container" class="container">
+    <div class="flex-container-off">
+        <div class="clock-off">
+            <div class="led led-mode led-off">88</div>
+            <div class="led led-time led-off">88:88</div>
+        </div>
     </div>
-</div>
-<div class="flex-container">
-    <div class="clock">
-        <div class="led led-mode" id="mode">10</div>
-        <div class="led led-time" id="timer">00:00</div>
+    <div class="flex-container">
+        <div class="clock">
+            <div class="led led-mode" id="mode">10</div>
+            <div class="led led-time" id="timer">00:00</div>
+        </div>
     </div>
-</div>
 
-<div class="controls">
-    <button onclick="stopTimer(true)" id="stopButton">STOP</button>
-    <button onclick="startTimerWithCountdown()" id="startTimerButton">DOWN</button>
-    <button onclick="startWithCountdown()" id="startButton">UP</button>
-    <button onclick="setEnterMode(true)" id="enterModeButton">SET</button>
+    <div class="controls">
+        <button onclick="launchFullScreen(document.getElementById('container'));" id="launchFullScreenButton"><span class="fa fa-expand"></span></button>
+        <button onclick="cancelFullscreen();" id="cancelFullScreenButton"><span class="fa fa-compress"></span></button>
+        <button onclick="stopTimer(true)" id="stopButton"><span class="fa fa-pause"></span></button>
+        <button onclick="startTimerWithCountdown()" id="startTimerButton"><span class="fa fa-history"></span></button>
+        <button onclick="startWithCountdown()" id="startButton"><span class="fa fa-play"></span></button>
+        <button onclick="setEnterMode(true)" id="enterModeButton"><span class="fa fa-flag"></span></button>
+    </div>
 </div>
 
 <script>
@@ -132,6 +148,7 @@
     var markBeepDuration = 600;
     var markBeepFrequency = 880;
     var countdownLength = 10;
+    var countdownBeepLength = 3;
 
     function buttonBeep() {
         beep(80, 1800, 0.2);
@@ -159,9 +176,9 @@
             };
         })();
         _beep(duration, freqency, volume);
-        _beep(duration, freqency * 2, volume);
-        _beep(duration, freqency * 3, volume);
-        _beep(duration, freqency * 4, volume);
+        // _beep(duration, freqency * 2, volume);
+        // _beep(duration, freqency * 3, volume);
+        // _beep(duration, freqency * 4, volume);
     }
 
     var countdownRunning = false;
@@ -183,7 +200,7 @@
             countdown = countdown - 1;
             if (countdownRunning) {
                 displayCurrentTime();
-                if (countdown < 4 && countdown > 0) {
+                if (countdown <= countdownBeepLength && countdown > 0) {
                     beep(introBeepDuration, introBeepFrequency, 0.8);
                 }
                 if (countdown === 0) {
@@ -254,7 +271,7 @@
         if (countdownRunning) {
             setMode(leftPad2(countdown));
             var startWith = "00:00";
-            if(clockRunningDown) {
+            if (clockRunningDown) {
                 startWith = moment.utc(timerDownDuration.valueOf()).format("ss:SS");
             }
             setTimer(startWith);
@@ -317,9 +334,10 @@
         countdown = countdownLength;
         enterMode.enabled = false;
 
-        setMode('' + countdownLength);
+        setMode(leftPad2(countdownLength));
         setTimer('00:00');
     }
+    reset();
 
     var enteredNumber = '0010';
     function setEnterMode(beep) {
@@ -381,6 +399,43 @@
         var str = "" + string;
         var pad = "00";
         return pad.substring(0, pad.length - str.length) + str;
+    }
+
+
+    function launchFullScreen(element) {
+        document.getElementById("launchFullScreenButton").style.display = "none";
+        document.getElementById("cancelFullScreenButton").style.display = "block";
+        if (element.requestFullScreen) {
+            element.requestFullScreen();
+        }
+        else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        }
+        else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        }
+        else if (element.msRequestFullScreen) {
+            element.msRequestFullScreen();
+        }
+    }
+
+    document.getElementById("launchFullScreenButton").style.display = "block";
+    document.getElementById("cancelFullScreenButton").style.display = "none";
+    function cancelFullscreen() {
+        document.getElementById("launchFullScreenButton").style.display = "block";
+        document.getElementById("cancelFullScreenButton").style.display = "none";
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        else if (document.msCancelFullScreen) {
+            document.msCancelFullScreen();
+        }
     }
 
 </script>
