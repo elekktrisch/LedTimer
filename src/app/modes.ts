@@ -4,6 +4,7 @@ import {Stopwatch} from "./stopwatch";
 import {CountUp} from "./count-up";
 import {CountDown} from "./count-down";
 import {Tabata} from "./tabata";
+import {Rounds} from "./rounds";
 
 export const MODES: Array<Mode> = [
   { display: "X1", label: "Clock", impl: new Clock("X1") },
@@ -11,10 +12,7 @@ export const MODES: Array<Mode> = [
   { display: "VP", label: "Count Up", impl: new CountUp("VP") },
   { display: "DN", label: "Count Down", impl: new CountDown("DN") },
   { display: "F1", label: "Tabata", impl: new Tabata("F1") },
-  { display: "A1", label: "Rounds" },
-  { display: "P1", label: "Program 1" },
-  { display: "P2", label: "Program 2" },
-  { display: "P3", label: "Program 3" }
+  { display: "A1", label: "Rounds", impl: new Rounds("A1") }
 ];
 
 export interface Mode {

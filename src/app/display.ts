@@ -1,9 +1,11 @@
 import * as moment from "moment";
 import {Beeper} from "./beeper";
 
+const BEEPER = new Beeper();
+
 export abstract class Display {
 
-  beeper: Beeper;
+  beeper: Beeper = BEEPER;
   countdownDurationSeconds: number = 10;
   mode: string;
   modeDisplay: string;
@@ -20,7 +22,6 @@ export abstract class Display {
 
   constructor(modeDisplay) {
     this.modeDisplay = modeDisplay;
-    this.beeper = new Beeper();
   }
 
   start() {
