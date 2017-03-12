@@ -21,11 +21,13 @@ export class AppComponent {
   ngOnInit() {
     this.selectedMode = MODES[0];
     this.display = this.selectedMode.impl;
+    this.selectedMode.settings = this.selectedMode.impl.defaultSettings();
     this.display.start();
   }
 
-  setMode(mode: Mode) {
-    this.display = mode.impl;
+  updateSettings(selectedMode: any) {
+    this.display = selectedMode.impl;
+    this.display.updateSettings(selectedMode.settings);
     this.display.reset();
     if (!this.display.supportsStartStop) {
       this.display.start();

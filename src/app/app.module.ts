@@ -5,7 +5,6 @@ import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
 import {MenuComponent} from './menu/menu.component';
-import {DigitsInputComponent} from './digits-input/digits-input.component';
 import {ModeSelectorComponent} from './mode-selector/mode-selector.component';
 import {Beeper} from './beeper';
 
@@ -13,7 +12,6 @@ import {Beeper} from './beeper';
   declarations: [
     AppComponent,
     MenuComponent,
-    DigitsInputComponent,
     ModeSelectorComponent
   ],
   imports: [

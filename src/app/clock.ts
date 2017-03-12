@@ -10,6 +10,9 @@ export class Clock extends Display {
     this.supportsStartStop = false;
   }
 
+  updateSpecificSettings(settings: any) {
+  }
+
   tick(): void {
     if (this.running) {
       setTimeout(() => {

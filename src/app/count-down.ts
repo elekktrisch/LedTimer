@@ -13,6 +13,10 @@ export class CountDown extends Display {
     this.colonVisible = true;
     this.supportsStartStop = true;
   }
+  
+  updateSpecificSettings(settings: any) {
+    this.startTimeString = settings.cuntDownGoal
+  }
 
   time1DuringCountdown(): string {
     return this.startTimeString.substring(0, 2);

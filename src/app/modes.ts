@@ -20,5 +20,6 @@ export interface Mode {
   display: string;
   label: string;
   impl?: Display;
+  settings?: any;
 
 }

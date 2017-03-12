@@ -22,6 +22,12 @@ export class Tabata extends Display {
     this.supportsStartStop = true;
   }
 
+  updateSpecificSettings(settings: any) {
+    this.rounds = settings.numberOfRounds;
+    this.workDuration = settings.workDuration;
+    this.breakDuration = settings.breakDuration;
+  }
+
   time1DuringCountdown(): string {
     return this.workDuration.substring(0, 2);
   }

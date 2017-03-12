@@ -12,6 +12,9 @@ export class Stopwatch extends Display {
     this.countdownDurationSeconds = 0;
   }
 
+  updateSpecificSettings(settings: any) {
+  }
+
   time1DuringCountdown(): string {
     return "00";
   }

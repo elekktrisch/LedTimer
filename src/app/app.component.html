@@ -1,7 +1,7 @@
 <app-menu [menuVisible]="menuVisible"
           [selectedMode]="selectedMode"
           (closeClicked)="menuVisible=false;"
-          (modeSelectionChanged)="setMode($event);"></app-menu>
+          (settingsChanged)="updateSettings($event);"></app-menu>
 
 <div id="container" class="container">
 

@@ -16,7 +16,7 @@ export class MenuComponent implements OnInit {
   closeClicked: EventEmitter<void> = new EventEmitter<void>();
 
   @Output()
-  modeSelectionChanged: EventEmitter<Mode> = new EventEmitter<Mode>();
+  settingsChanged: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
   selectedMode: Mode;
@@ -29,12 +29,13 @@ export class MenuComponent implements OnInit {
 
   selectMode(mode: Mode) {
     this.selectedMode = mode;
+    this.selectedMode.settings = this.selectedMode.settings || this.selectedMode.impl.defaultSettings();
   }
 
   okClicked(): void {
     this.beeper.buttonBeep();
-    if(this.selectMode) {
-      this.modeSelectionChanged.emit(this.selectedMode);
+    if (this.selectMode) {
+      this.settingsChanged.emit(this.selectedMode);
     }
     this.menuVisible = false;
   }

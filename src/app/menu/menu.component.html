@@ -1,40 +1,56 @@
-<div id="menu" [ngClass]="{'active': menuVisible}">
+<form id="menu" [ngClass]="{'active': menuVisible}" novalidate>
   <span class="fa fa-times menu-close-button" (click)="closeClicked.emit()"></span>
 
   <h1>Mode</h1>
   <app-mode-selector (modeSelectionChanged)="selectMode($event)"></app-mode-selector>
 
-  <div class="mode-specific-settings-panel" *ngIf="selectedMode.label !== 'Clock'">
+  <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label !== 'Clock'">
     <h1>Start Countdown (Seconds)</h1>
-    <app-digits-input [value]="selectedMode.label !== 'Stopwatch' ? '10' : '0'" [blue]="true"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="startCountdownSeconds" [(ngModel)]="selectedMode.settings.startCountdownSeconds" size="5" class="blue">
+    </div>
   </div>
 
-  <div class="mode-specific-settings-panel" *ngIf="selectedMode.label === 'Count Up'">
+  <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Count Up'">
     <h1>Goal</h1>
-    <app-digits-input [value]="'12:00'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="countUpGoal" [(ngModel)]="selectedMode.settings.countUpGoal" size="5">
+    </div>
   </div>
 
-  <div class="mode-specific-settings-panel" *ngIf="selectedMode.label === 'Count Down'">
+  <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Count Down'">
     <h1>Start</h1>
-    <app-digits-input [value]="'12:00'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="countDownGoal" [(ngModel)]="selectedMode.settings.countDownGoal" size="5">
+    </div>
   </div>
 
-  <div class="mode-specific-settings-panel" *ngIf="selectedMode.label === 'Tabata'">
+  <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Tabata'">
     <h1>Work</h1>
-    <app-digits-input [value]="'00:20'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="workDuration" [(ngModel)]="selectedMode.settings.workDuration" size="5">
+    </div>
     <h1>Break</h1>
-    <app-digits-input [value]="'00:10'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="breakDuration" [(ngModel)]="selectedMode.settings.breakDuration" size="5">
+    </div>
     <h1>Number of Rounds</h1>
-    <app-digits-input [value]="'8'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" size="5">
+    </div>
   </div>
 
-  <div class="mode-specific-settings-panel" *ngIf="selectedMode.label === 'Rounds'">
+  <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Rounds'">
     <h1>Round</h1>
-    <app-digits-input [value]="'00:30'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="workDuration" [(ngModel)]="selectedMode.settings.workDuration" size="5">
+    </div>
     <h1>Number of Rounds</h1>
-    <app-digits-input [value]="'8'"></app-digits-input>
+    <div class="digits-input">
+      <input type="text" name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" size="5">
+    </div>
   </div>
 
   <button class="ok-button" (click)="okClicked()">OK</button>
 
-</div>
+</form>

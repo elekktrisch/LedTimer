@@ -24,6 +24,26 @@ export abstract class Display {
     this.modeDisplay = modeDisplay;
   }
 
+  updateSettings(settings: any) {
+    if(settings) {
+      this.countdownDurationSeconds = parseInt(settings.startCountdownSeconds);
+      this.updateSpecificSettings(settings);
+    }
+  }
+
+  abstract updateSpecificSettings(settings: any);
+
+  defaultSettings(): any {
+    return {
+      startCountdownSeconds: 10,
+      countUpGoal: "00:12",
+      countDownGoal: "00:12",
+      workDuration: "00:20",
+      breakDuration: "00:10",
+      numberOfRounds: "8",
+    }
+  }
+
   start() {
     this.reset();
     this.pristine = false;

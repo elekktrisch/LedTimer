@@ -14,6 +14,10 @@ export class CountUp extends Display {
     this.supportsStartStop = true;
   }
 
+  updateSpecificSettings(settings: any) {
+    this.targetTimeString = settings.cuntUpGoal;
+  }
+
   time1DuringCountdown(): string {
     return "00";
   }

@@ -17,6 +17,11 @@ export class Rounds extends Display {
     this.supportsStartStop = true;
   }
 
+  updateSpecificSettings(settings: any) {
+    this.rounds = settings.numberOfRounds;
+    this.roundDuration = settings.workDuration;
+  }
+
   time1DuringCountdown(): string {
     return this.roundDuration.substring(0, 2);
   }
