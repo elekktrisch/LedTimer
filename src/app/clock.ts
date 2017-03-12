@@ -3,8 +3,8 @@ import * as moment from "moment";
 
 export class Clock extends Display {
 
-  constructor() {
-    super();
+  constructor(modeDisplay) {
+    super(modeDisplay);
     this.colonVisible = false;
     this.running = false;
     this.supportsStartStop = false;
@@ -32,19 +32,16 @@ export class Clock extends Display {
     return "00";
   }
 
-  reset(): void {
-    this.mode = '88';
-    this.time1 = '88';
-    this.time2 = '88';
-    this.active = false;
-    this.colonVisible = false;
+  modeForReset(): string {
+    return "88";
   }
 
-  stop() {
-    if (this.running) {
-      this.running = false;
-      this.active = false;
-    }
+  time1ForReset(): string {
+    return "88";
+  }
+
+  time2ForReset(): string {
+    return "88";
   }
 
 }

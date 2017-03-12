@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.selectedMode = MODES[0];
+    this.selectedMode = MODES[2];
     this.display = this.selectedMode.impl;
     this.display.start();
   }
@@ -27,15 +27,21 @@ export class AppComponent {
   setMode(mode: Mode) {
     this.display = mode.impl;
     this.display.reset();
+    if (!this.display.supportsStartStop) {
+      this.display.start();
+    }
     this.menuVisible = false;
   }
 
   toggleRunning() {
     this.beeper.buttonBeep();
-    if (this.display.running) {
+
+    if (this.display.running || this.display.countingDown) {
       this.display.stop();
-    } else {
+    } else if (this.display.pristine) {
       this.display.start();
+    } else {
+      this.display.reset();
     }
   }
 

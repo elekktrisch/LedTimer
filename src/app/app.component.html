@@ -21,7 +21,13 @@
 
   <div class="controls">
     <button (click)="toggleFullScreen();"><span class="fa" [ngClass]="{'fa-expand': !fullScreenActive, 'fa-compress': fullScreenActive}"></span></button>
-    <button (click)="toggleRunning()" *ngIf="!fullScreenActive && display.supportsStartStop"><span class="fa" [ngClass]="{'fa-play': !display.running, 'fa-pause': display.running}"></span></button>
+    <button (click)="toggleRunning()" *ngIf="!fullScreenActive && display.supportsStartStop">
+      <span class="fa" [ngClass]="{
+                                    'fa-play': display.pristine,
+                                    'fa-pause': (display.running || display.countingDown),
+                                    'fa-undo': !display.pristine && !(display.running || display.countingDown)
+                                  }"></span>
+    </button>
     <button (click)="toggleMenu()" *ngIf="!fullScreenActive">MODE</button>
   </div>
 

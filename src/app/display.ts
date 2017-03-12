@@ -6,25 +6,31 @@ export abstract class Display {
   beeper: Beeper;
   countdownDurationSeconds: number = 10;
   mode: string;
+  modeDisplay: string;
   time1: string;
   time2: string;
   colonVisible: boolean;
   active: boolean;
   running: boolean;
+  pristine: boolean = true;
   countingDown: boolean = false;
   supportsStartStop: boolean;
   startTime;
   countdownTargetTime;
 
-  constructor() {
+  constructor(modeDisplay) {
+    this.modeDisplay = modeDisplay;
     this.beeper = new Beeper();
   }
 
   start() {
     this.reset();
+    this.pristine = false;
     if (!this.countingDown && !this.running) {
       if (this.supportsStartStop) {
         this.countdownTargetTime = moment().add(this.countdownDurationSeconds, 'seconds');
+        this.countingDown = true;
+        this.running = false;
         this.tickCountdown();
       } else {
         this.startWorkout();
@@ -33,7 +39,6 @@ export abstract class Display {
   }
 
   tickCountdown(): void {
-    this.countingDown = true;
     this.time1 = this.time1DuringCountdown();
     this.time2 = this.time2DuringCountdown();
     if (this.countingDown) {
@@ -42,6 +47,7 @@ export abstract class Display {
         let diff = this.countdownTargetTime.diff(moment());
         if (diff.valueOf() <= 1000) {
           this.beeper.startBeep();
+          this.mode = this.modeDisplay;
           this.startWorkout();
         } else {
           let nextMode = moment.utc(moment.duration(diff).asMilliseconds()).format("ss");
@@ -66,21 +72,46 @@ export abstract class Display {
     }
   }
 
+  finishWorkout(): void {
+    this.running = false;
+    this.countingDown = false;
+    this.colonVisible = true;
+    this.beeper.finishBeep()
+  }
+
   abstract time1DuringCountdown(): string;
 
   abstract time2DuringCountdown(): string;
 
   abstract tick(): void;
 
-  abstract stop(): void;
-
-  abstract reset(): void;
+  stop() {
+    if (this.running || this.countingDown) {
+      this.running = false;
+      this.countingDown = false;
+      this.colonVisible = false;
+    }
+  }
 
   private leftPad(string): string {
     var str = "" + string;
     var pad = "00";
 
     return pad.substring(0, pad.length - str.length) + str;
+  }
+
+  abstract modeForReset(): string;
+
+  abstract time1ForReset(): string;
+
+  abstract time2ForReset(): string;
+
+  reset(): void {
+    this.mode = this.modeForReset();
+    this.time1 = this.time1ForReset();
+    this.time2 = this.time2ForReset();
+    this.pristine = true;
+    this.colonVisible = true;
   }
 
 }
