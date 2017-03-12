@@ -1,24 +1,16 @@
 import {Display} from "./display";
 import * as moment from "moment";
 
-export class Clock implements Display {
+export class Clock extends Display {
 
-  mode: string;
-  time1: string;
-  time2: string;
-  colonVisible = false;
-  active: boolean;
-  running = false;
-  supportsStartStop = false;
-
-  start() {
-    if (!this.running) {
-      this.running = true;
-      this.tick();
-    }
+  constructor() {
+    super();
+    this.colonVisible = false;
+    this.running = false;
+    this.supportsStartStop = false;
   }
 
-  private tick(): void {
+  tick(): void {
     if (this.running) {
       setTimeout(() => {
         this.active = true;
@@ -32,13 +24,20 @@ export class Clock implements Display {
     }
   }
 
+  time1DuringCountdown(): string {
+    return "00";
+  }
+
+  time2DuringCountdown(): string {
+    return "00";
+  }
+
   reset(): void {
     this.mode = '88';
     this.time1 = '88';
     this.time2 = '88';
     this.active = false;
     this.colonVisible = false;
-    this.start();
   }
 
   stop() {

@@ -1,24 +1,12 @@
-import {Display} from "./Display";
+import {Display} from "./display";
 import * as moment from "moment";
 
-export class Stopwatch implements Display {
+export class Stopwatch extends Display {
 
-  mode: string;
-  time1: string;
-  time2: string;
-  colonVisible: boolean;
-  active: boolean;
-  running = false;
-  supportsStartStop = true;
-  startTime;
-
-  start() {
-    this.reset();
-    if (!this.running) {
-      this.startTime = moment();
-      this.running = true;
-      this.tick();
-    }
+  constructor() {
+    super();
+    this.running = false;
+    this.supportsStartStop = true;
   }
 
   reset(): void {
@@ -30,7 +18,15 @@ export class Stopwatch implements Display {
     this.running = false;
   }
 
-  private tick(): void {
+  time1DuringCountdown(): string {
+    return "00";
+  }
+
+  time2DuringCountdown(): string {
+    return "00";
+  }
+
+  tick(): void {
     if (this.running) {
       setTimeout(() => {
         let diff = moment().diff(this.startTime);
