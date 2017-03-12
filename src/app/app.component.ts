@@ -3,6 +3,7 @@ import {Clock} from './clock';
 import {Display} from './display';
 import {Stopwatch} from './stopwatch';
 import {Beeper} from './beeper';
+import {MODES, Mode} from './modes';
 
 @Component({
   selector: 'app-root',
@@ -15,18 +16,20 @@ export class AppComponent {
 
   fullScreenActive: boolean = false;
   display: Display;
-  private modes: Array<Display> = [
-    new Clock(),
-    new Stopwatch()
-  ];
   private currentMode: number = 0;
 
   constructor(private beeper: Beeper) {
   }
 
   ngOnInit() {
-    this.display = this.modes[0];
+    this.display = MODES[0].impl;
     this.display.start();
+  }
+
+  setMode(mode: Mode) {
+    this.display = mode.impl;
+    this.display.reset();
+    this.menuVisible = false;
   }
 
   toggleRunning() {
@@ -46,14 +49,6 @@ export class AppComponent {
       this.launchFullScreen();
     }
     this.fullScreenActive = !this.fullScreenActive;
-  }
-
-  toggleMode(): void {
-    this.beeper.buttonBeep();
-    this.currentMode = this.currentMode + 1;
-    this.display.stop();
-    this.display = this.modes[this.currentMode % this.modes.length];
-    this.display.reset();
   }
 
   toggleMenu(): void {

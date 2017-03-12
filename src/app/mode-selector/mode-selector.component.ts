@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {Beeper} from '../beeper';
+import {MODES, Mode} from '../modes';
 
 @Component({
   selector: 'app-mode-selector',
@@ -8,40 +9,30 @@ import {Beeper} from '../beeper';
 })
 export class ModeSelectorComponent implements OnInit {
 
-  modes: Array<Mode> = [
-    { display: "X1", label: "Clock" },
-    { display: "00", label: "Stopwatch" },
-    { display: "VP", label: "Count Up" },
-    { display: "DN", label: "Count Down" },
-    { display: "L1", label: "Tabata" },
-    { display: "A1", label: "Rounds" }
-  ];
+  modes: Array<Mode> = MODES;
   selectedMode: Mode;
   modesMenuVisible: boolean = false;
+  
+  @Output()
+  modeSelectionChanged: EventEmitter<Mode> = new EventEmitter<Mode>();
 
   constructor(private beeper: Beeper) {
-    this.selectedMode = this.modes[0];
   }
 
   ngOnInit() {
+    this.selectedMode = this.modes[0];
   }
 
   selectMode(mode) {
     this.beeper.buttonBeep();
     this.selectedMode = mode;
     this.modesMenuVisible = false;
+    this.modeSelectionChanged.emit(this.selectedMode);
   }
 
   toggleDropdown() {
     this.beeper.buttonBeep();
     this.modesMenuVisible = !this.modesMenuVisible;
   }
-
-}
-
-interface Mode {
-
-  display: string;
-  label: string;
 
 }

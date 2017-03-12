@@ -9,6 +9,7 @@ export class Stopwatch implements Display {
   colonVisible: boolean;
   active: boolean;
   running = false;
+  supportsStartStop = true;
   startTime;
 
   start() {

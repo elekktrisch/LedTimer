@@ -1,4 +1,4 @@
-<app-menu [menuVisible]="menuVisible" (closeClicked)="menuVisible=false;"></app-menu>
+<app-menu [menuVisible]="menuVisible" (closeClicked)="menuVisible=false;" (modeSelectionChanged)="setMode($event);"></app-menu>
 
 <div id="container" class="container">
   <div class="flex-container-off">
@@ -16,8 +16,8 @@
 
   <div class="controls">
     <button (click)="toggleFullScreen();"><span class="fa" [ngClass]="{'fa-expand': !fullScreenActive, 'fa-compress': fullScreenActive}"></span></button>
-    <button (click)="toggleRunning()" *ngIf="!fullScreenActive"><span class="fa" [ngClass]="{'fa-play': !display.running, 'fa-pause': display.running}"></span></button>
-    <button (click)="toggleMode()" *ngIf="!fullScreenActive">MODE</button>
+    <button (click)="toggleRunning()" *ngIf="!fullScreenActive && display.supportsStartStop"><span class="fa" [ngClass]="{'fa-play': !display.running, 'fa-pause': display.running}"></span></button>
     <button (click)="toggleMenu()" *ngIf="!fullScreenActive">SET</button>
   </div>
+
 </div>

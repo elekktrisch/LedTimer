@@ -1,6 +1,12 @@
-<div class="selected-mode" (click)="toggleDropdown();">
-  {{selectedMode.display}}
+<div (click)="toggleDropdown();">
+  <span class="selected-mode">
+    {{selectedMode.display}}
+  </span>
+  <span class="selected-mode-label">
+    {{selectedMode.label}}
+  </span>
 </div>
+
 <div class="menu-container">
   <div class="modes" *ngIf="modesMenuVisible">
     <button *ngFor="let mode of modes" (click)="selectMode(mode);">{{mode.label}}</button>

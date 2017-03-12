@@ -9,6 +9,7 @@ export class Clock implements Display {
   colonVisible = false;
   active: boolean;
   running = false;
+  supportsStartStop = false;
 
   start() {
     if (!this.running) {

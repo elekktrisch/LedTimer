@@ -11,7 +11,7 @@ export class Beeper {
   }
 
   public buttonBeep() {
-    this.beep(80, 1800, 0.2);
+    this.beep(80, 1500, 0.2);
   }
 
   public countdownBeep() {
