@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {Beeper} from '../beeper';
-import {MODES, Mode} from '../modes';
+import {Mode} from '../modes';
 
 @Component({
   selector: 'app-menu',
@@ -18,7 +18,8 @@ export class MenuComponent implements OnInit {
   @Output()
   modeSelectionChanged: EventEmitter<Mode> = new EventEmitter<Mode>();
 
-  private selectedMode: Mode;
+  @Input()
+  selectedMode: Mode;
 
   constructor(private beeper: Beeper) {
   }

@@ -1,12 +1,17 @@
-<app-menu [menuVisible]="menuVisible" (closeClicked)="menuVisible=false;" (modeSelectionChanged)="setMode($event);"></app-menu>
+<app-menu [menuVisible]="menuVisible"
+          [selectedMode]="selectedMode"
+          (closeClicked)="menuVisible=false;"
+          (modeSelectionChanged)="setMode($event);"></app-menu>
 
 <div id="container" class="container">
+
   <div class="flex-container-off">
     <div class="clock-off">
       <div class="led led-mode led-off">88</div>
       <div class="led led-time led-off">88:88</div>
     </div>
   </div>
+
   <div class="flex-container">
     <div class="clock">
       <div class="led led-mode" [ngClass]="{'led-off':!display.active}">{{display.mode}}</div>
@@ -17,7 +22,7 @@
   <div class="controls">
     <button (click)="toggleFullScreen();"><span class="fa" [ngClass]="{'fa-expand': !fullScreenActive, 'fa-compress': fullScreenActive}"></span></button>
     <button (click)="toggleRunning()" *ngIf="!fullScreenActive && display.supportsStartStop"><span class="fa" [ngClass]="{'fa-play': !display.running, 'fa-pause': display.running}"></span></button>
-    <button (click)="toggleMenu()" *ngIf="!fullScreenActive">SET</button>
+    <button (click)="toggleMenu()" *ngIf="!fullScreenActive">MODE</button>
   </div>
 
 </div>

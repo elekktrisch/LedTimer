@@ -12,3 +12,8 @@ input {
   border-bottom-style: solid;
   font-family: '7segment', monospace;
 }
+
+input.blue {
+  color: #6ba1ff;
+  text-shadow: 0 0 5px #a49cff;
+}

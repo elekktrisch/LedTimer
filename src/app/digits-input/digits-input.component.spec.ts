@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RepetitionFieldComponent } from './repetition-field.component';
+import { DigitsInputComponent } from './digits-input.component';
 
-describe('RepetitionFieldComponent', () => {
-  let component: RepetitionFieldComponent;
-  let fixture: ComponentFixture<RepetitionFieldComponent>;
+describe('DigitsInputComponent', () => {
+  let component: DigitsInputComponent;
+  let fixture: ComponentFixture<DigitsInputComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RepetitionFieldComponent ]
+      declarations: [ DigitsInputComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RepetitionFieldComponent);
+    fixture = TestBed.createComponent(DigitsInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

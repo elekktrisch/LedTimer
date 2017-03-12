@@ -1,7 +1,5 @@
 import {Component} from '@angular/core';
-import {Clock} from './clock';
 import {Display} from './display';
-import {Stopwatch} from './stopwatch';
 import {Beeper} from './beeper';
 import {MODES, Mode} from './modes';
 
@@ -13,15 +11,15 @@ import {MODES, Mode} from './modes';
 export class AppComponent {
 
   menuVisible: boolean = false;
-
   fullScreenActive: boolean = false;
   display: Display;
-  private currentMode: number = 0;
+  selectedMode: Mode;
 
   constructor(private beeper: Beeper) {
   }
 
   ngOnInit() {
+    this.selectedMode = MODES[0];
     this.display = MODES[0].impl;
     this.display.start();
   }
