@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.selectedMode = MODES[2];
+    this.selectedMode = MODES[0];
     this.display = this.selectedMode.impl;
     this.display.start();
   }

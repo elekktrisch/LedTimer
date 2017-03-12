@@ -6,7 +6,7 @@
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode.label !== 'Clock'">
     <h1>Start Countdown (Seconds)</h1>
-    <app-digits-input [value]="'10'" [blue]="true"></app-digits-input>
+    <app-digits-input [value]="selectedMode.label !== 'Stopwatch' ? '10' : '0'" [blue]="true"></app-digits-input>
   </div>
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode.label === 'Count Up'">

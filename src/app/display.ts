@@ -45,15 +45,15 @@ export abstract class Display {
       setTimeout(() => {
         this.active = true;
         let diff = this.countdownTargetTime.diff(moment());
-        if (diff.valueOf() <= 1000) {
+        if (diff.valueOf() < 0) {
           this.beeper.startBeep();
           this.mode = this.modeDisplay;
           this.startWorkout();
         } else {
-          let nextMode = moment.utc(moment.duration(diff).asMilliseconds()).format("ss");
+          let nextMode = moment.utc(moment.duration(diff).asMilliseconds() + 990).format("ss");
           if (nextMode !== this.mode) {
             this.mode = nextMode;
-            if (diff.valueOf() <= 4800 && diff.valueOf() > 800) {
+            if (diff.valueOf() <= 3100 && diff.valueOf() > 0) {
               this.beeper.countdownBeep();
             }
           }
