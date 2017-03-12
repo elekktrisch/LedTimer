@@ -58,8 +58,8 @@ html, body {
 }
 
 .led-off {
-  color: #2c2c2c;
-  text-shadow: -1px -1px 0.2vw #474747;
+  color: #222222;
+  text-shadow: 0 0 2vw rgba(5, 3, 2, 0.66);
 }
 
 .controls {
