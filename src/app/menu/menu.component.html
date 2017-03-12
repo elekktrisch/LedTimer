@@ -2,17 +2,8 @@
   <span class="fa fa-times menu-close-button" (click)="closeClicked.emit()"></span>
 
   <h1>Mode</h1>
-  <div class="selected-mode" (click)="modesMenuVisible = !modesMenuVisible">X1</div>
-  <div class="menu-container">
-    <div class="modes" *ngIf="modesMenuVisible">
-      <button>Clock</button>
-      <button>Stopwatch</button>
-      <button>Count Up</button>
-      <button>Count Down</button>
-      <button>Tabata</button>
-      <button>Rounds</button>
-    </div>
-  </div>
+  <app-mode-selector></app-mode-selector>
+
   <div class="mode-specific-settings-panel">
     <h1>Limit</h1>
     <app-repetition-field></app-repetition-field>

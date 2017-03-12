@@ -63,12 +63,13 @@ html, body {
 }
 
 .controls {
+  box-sizing: border-box;
   background-image: linear-gradient(to left, #121212, black);
   padding: 10px;
   position: absolute;
   z-index: 2;
   left: 0;
-  width: 90%;
+  width: 100%;
   bottom: 0;
   text-align: center;
   align-items: center;

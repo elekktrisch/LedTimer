@@ -11,7 +11,6 @@ import {Beeper} from './beeper';
 })
 export class AppComponent {
 
-  private beeper: Beeper = new Beeper();
   menuVisible: boolean = false;
 
   fullScreenActive: boolean = false;
@@ -21,6 +20,9 @@ export class AppComponent {
     new Stopwatch()
   ];
   private currentMode: number = 0;
+
+  constructor(private beeper: Beeper) {
+  }
 
   ngOnInit() {
     this.display = this.modes[0];
