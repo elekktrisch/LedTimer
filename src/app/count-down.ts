@@ -13,9 +13,9 @@ export class CountDown extends Display {
     this.colonVisible = true;
     this.supportsStartStop = true;
   }
-  
+
   updateSpecificSettings(settings: any) {
-    this.startTimeString = settings.cuntDownGoal
+    this.startTimeString = settings.countDownGoal
   }
 
   time1DuringCountdown(): string {

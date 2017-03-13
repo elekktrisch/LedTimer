@@ -15,7 +15,7 @@ export class CountUp extends Display {
   }
 
   updateSpecificSettings(settings: any) {
-    this.targetTimeString = settings.cuntUpGoal;
+    this.targetTimeString = settings.countUpGoal;
   }
 
   time1DuringCountdown(): string {
