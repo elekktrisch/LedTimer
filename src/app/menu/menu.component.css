@@ -47,6 +47,10 @@ h1 {
   right: 5vh;
 }
 
+.input-row {
+  display: flex;
+}
+
 .digits-input,
 .digits-input input {
   font-size: 5vh;
@@ -57,12 +61,23 @@ input {
   text-shadow: 0 0 5px #ff887e;
   background-color: rgba(0,0,0,0.1);
   padding: 1vh;
-  border: 1px none white;
-  border-bottom-style: solid;
+  border: none;
   font-family: '7segment', monospace;
 }
 
 input.blue {
   color: #6ba1ff;
   text-shadow: 0 0 5px #a49cff;
+}
+
+md-slider {
+  flex-grow: 1;
+  margin-top: 1vh;
+  margin-left: 5vw;
+  width: 50vw;
+}
+
+md-slider:focus {
+  background-image: linear-gradient(to top, rgba(109, 104, 113, 0.48) 40%, rgba(56, 56, 56, 0.37) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }

@@ -6,48 +6,91 @@
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label !== 'Clock'">
     <h1>Start Countdown (Seconds)</h1>
-    <div class="digits-input">
-      <input type="text" name="startCountdownSeconds" [(ngModel)]="selectedMode.settings.startCountdownSeconds" size="5" class="blue">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="startCountdownSeconds" [(ngModel)]="selectedMode.settings.startCountdownSeconds"
+               size="5"
+               class="blue"
+               readonly>
+      </div>
+      <md-slider name="startCountdownSeconds" [(ngModel)]="selectedMode.settings.startCountdownSeconds" [min]="1"
+                 [max]="10"></md-slider>
     </div>
   </div>
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Count Up'">
     <h1>Goal</h1>
-    <div class="digits-input">
-      <input type="text" name="countUpGoal" [(ngModel)]="selectedMode.settings.countUpGoal" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="countUpGoal" [(ngModel)]="selectedMode.settings.countUpGoal" size="5" readonly>
+      </div>
+      <md-slider name="countUpGoalSeconds" [(ngModel)]="countUpGoalSeconds" (change)="countUpGoalSecondsChanged()"
+                 [min]="1"
+                 [max]="3600"></md-slider>
     </div>
   </div>
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Count Down'">
     <h1>Start</h1>
-    <div class="digits-input">
-      <input type="text" name="countDownGoal" [(ngModel)]="selectedMode.settings.countDownGoal" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="countDownGoal" [(ngModel)]="selectedMode.settings.countDownGoal" size="5" readonly>
+      </div>
+      <md-slider name="countDownGoalSeconds" [(ngModel)]="countDownGoalSeconds" (change)="countDownGoalSecondsChanged()"
+                 [min]="1"
+                 [max]="3600"></md-slider>
     </div>
   </div>
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Tabata'">
     <h1>Work</h1>
-    <div class="digits-input">
-      <input type="text" name="workDuration" [(ngModel)]="selectedMode.settings.workDuration" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="workDuration" [(ngModel)]="selectedMode.settings.workDuration" size="5" readonly>
+      </div>
+      <md-slider name="workDurationSeconds" [(ngModel)]="workDurationSeconds"
+                 (change)="workDurationSecondsChanged()"
+                 [min]="1"
+                 [max]="3600"></md-slider>
     </div>
     <h1>Break</h1>
-    <div class="digits-input">
-      <input type="text" name="breakDuration" [(ngModel)]="selectedMode.settings.breakDuration" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="breakDuration" [(ngModel)]="selectedMode.settings.breakDuration" size="5" readonly>
+      </div>
+      <md-slider name="breakDurationSeconds" [(ngModel)]="breakDurationSeconds"
+                 (change)="breakDurationSecondsChanged()"
+                 [min]="1"
+                 [max]="300"></md-slider>
     </div>
     <h1>Number of Rounds</h1>
-    <div class="digits-input">
-      <input type="text" name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" size="5" readonly>
+      </div>
+      <md-slider name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" [min]="1"
+                 [max]="10"></md-slider>
     </div>
   </div>
 
   <div class="mode-specific-settings-panel" *ngIf="selectedMode?.label === 'Rounds'">
     <h1>Round</h1>
-    <div class="digits-input">
-      <input type="text" name="workDuration" [(ngModel)]="selectedMode.settings.workDuration" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="workDuration" [(ngModel)]="selectedMode.settings.workDuration" size="5" readonly>
+      </div>
+      <md-slider name="workDurationSeconds" [(ngModel)]="workDurationSeconds"
+                 (change)="workDurationSecondsChanged()"
+                 [min]="1"
+                 [max]="600"></md-slider>
     </div>
     <h1>Number of Rounds</h1>
-    <div class="digits-input">
-      <input type="text" name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" size="5">
+    <div class="input-row">
+      <div class="digits-input">
+        <input tabindex="-1" type="text" name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" size="5" readonly>
+      </div>
+      <md-slider name="numberOfRounds" [(ngModel)]="selectedMode.settings.numberOfRounds" [min]="1"
+                 [max]="10"></md-slider>
     </div>
   </div>
 

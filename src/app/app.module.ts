@@ -2,11 +2,13 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import {MaterialModule} from '@angular/material';
 
 import {AppComponent} from './app.component';
 import {MenuComponent} from './menu/menu.component';
 import {ModeSelectorComponent} from './mode-selector/mode-selector.component';
 import {Beeper} from './beeper';
+import "hammerjs";
 
 @NgModule({
   declarations: [
@@ -15,6 +17,7 @@ import {Beeper} from './beeper';
     ModeSelectorComponent
   ],
   imports: [
+    MaterialModule,
     BrowserModule,
     FormsModule,
     HttpModule

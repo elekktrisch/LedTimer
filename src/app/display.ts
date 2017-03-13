@@ -36,8 +36,8 @@ export abstract class Display {
   defaultSettings(): any {
     return {
       startCountdownSeconds: 10,
-      countUpGoal: "00:12",
-      countDownGoal: "00:12",
+      countUpGoal: "12:00",
+      countDownGoal: "12:00",
       workDuration: "00:20",
       breakDuration: "00:10",
       numberOfRounds: "8",
@@ -80,7 +80,7 @@ export abstract class Display {
           }
           this.tickCountdown();
         }
-      }, 50);
+      }, 213);
     }
   }
 

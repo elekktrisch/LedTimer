@@ -12,7 +12,7 @@ export const MODES: Array<Mode> = [
   { display: "VP", label: "Count Up", impl: new CountUp("VP") },
   { display: "DN", label: "Count Down", impl: new CountDown("DN") },
   { display: "F1", label: "Tabata", impl: new Tabata("F1") },
-  { display: "A1", label: "Rounds", impl: new Rounds("A1") }
+  { display: "r1", label: "Rounds", impl: new Rounds("r1") }
 ];
 
 export interface Mode {

@@ -2,10 +2,12 @@ import {Component} from '@angular/core';
 import {Display} from './display';
 import {Beeper} from './beeper';
 import {MODES, Mode} from './modes';
+import "hammerjs";
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  template: '<md-slider style="width:100%;"></md-slider>',
+  // templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
